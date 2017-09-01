@@ -475,9 +475,15 @@ public class AddressBook {
      * @param commandArgs full command args string from the user
      * @return feedback display message for the operation result
      */
+//    private static String executeFindPersons(String commandArgs) {
+//        final Set<String> keywords = extractKeywordsFromFindPersonArgs(commandArgs);
+//        final ArrayList<String[]> personsFound = getPersonsWithNameContainingAnyKeyword(keywords);
+//        showToUser(personsFound);
+//        return getMessageForPersonsDisplayedSummary(personsFound);
+//    }
     private static String executeFindPersons(String commandArgs) {
         final Set<String> keywords = extractKeywordsFromFindPersonArgs(commandArgs);
-        final ArrayList<String[]> personsFound = getPersonsWithNameContainingAnyKeyword(keywords);
+        final ArrayList<HashMap<String,String>> personsFound = getPersonsWithNameContainingAnyKeyword(keywords);
         showToUser(personsFound);
         return getMessageForPersonsDisplayedSummary(personsFound);
     }
@@ -488,10 +494,12 @@ public class AddressBook {
      * @param personsDisplayed used to generate summary
      * @return summary message for persons displayed
      */
-    private static String getMessageForPersonsDisplayedSummary(ArrayList<String[]> personsDisplayed) {
+//    private static String getMessageForPersonsDisplayedSummary(ArrayList<String[]> personsDisplayed) {
+//        return String.format(MESSAGE_PERSONS_FOUND_OVERVIEW, personsDisplayed.size());
+//    }
+    private static String getMessageForPersonsDisplayedSummary(ArrayList<HashMap<String,String>> personsDisplayed) {
         return String.format(MESSAGE_PERSONS_FOUND_OVERVIEW, personsDisplayed.size());
     }
-
     /**
      * Extracts keywords from the command arguments given for the find persons command.
      *
@@ -508,9 +516,19 @@ public class AddressBook {
      * @param keywords for searching
      * @return list of persons in full model with name containing some of the keywords
      */
-    private static ArrayList<String[]> getPersonsWithNameContainingAnyKeyword(Collection<String> keywords) {
-        final ArrayList<String[]> matchedPersons = new ArrayList<>();
-        for (String[] person : getAllPersonsInAddressBook()) {
+//    private static ArrayList<String[]> getPersonsWithNameContainingAnyKeyword(Collection<String> keywords) {
+//        final ArrayList<String[]> matchedPersons = new ArrayList<>();
+//        for (String[] person : getAllPersonsInAddressBook()) {
+//            final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person)));
+//            if (!Collections.disjoint(wordsInName, keywords)) {
+//                matchedPersons.add(person);
+//            }
+//        }
+//        return matchedPersons;
+//    }
+    private static ArrayList<HashMap<String,String>> getPersonsWithNameContainingAnyKeyword(Collection<String> keywords) {
+        final ArrayList<HashMap<String,String>> matchedPersons = new ArrayList<>();
+        for (HashMap<String,String> person : getAllPersonsInAddressBook()) {
             final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person)));
             if (!Collections.disjoint(wordsInName, keywords)) {
                 matchedPersons.add(person);
@@ -525,6 +543,18 @@ public class AddressBook {
      * @param commandArgs full command args string from the user
      * @return feedback display message for the operation result
      */
+//    private static String executeDeletePerson(String commandArgs) {
+//        if (!isDeletePersonArgsValid(commandArgs)) {
+//            return getMessageForInvalidCommandInput(COMMAND_DELETE_WORD, getUsageInfoForDeleteCommand());
+//        }
+//        final int targetVisibleIndex = extractTargetIndexFromDeletePersonArgs(commandArgs);
+//        if (!isDisplayIndexValidForLastPersonListingView(targetVisibleIndex)) {
+//            return MESSAGE_INVALID_PERSON_DISPLAYED_INDEX;
+//        }
+//        final String[] targetInModel = getPersonByLastVisibleIndex(targetVisibleIndex);
+//        return deletePersonFromAddressBook(targetInModel) ? getMessageForSuccessfulDelete(targetInModel) // success
+//                : MESSAGE_PERSON_NOT_IN_ADDRESSBOOK; // not found
+//    }
     private static String executeDeletePerson(String commandArgs) {
         if (!isDeletePersonArgsValid(commandArgs)) {
             return getMessageForInvalidCommandInput(COMMAND_DELETE_WORD, getUsageInfoForDeleteCommand());
@@ -533,7 +563,7 @@ public class AddressBook {
         if (!isDisplayIndexValidForLastPersonListingView(targetVisibleIndex)) {
             return MESSAGE_INVALID_PERSON_DISPLAYED_INDEX;
         }
-        final String[] targetInModel = getPersonByLastVisibleIndex(targetVisibleIndex);
+        final HashMap<String,String> targetInModel = getPersonByLastVisibleIndex(targetVisibleIndex);
         return deletePersonFromAddressBook(targetInModel) ? getMessageForSuccessfulDelete(targetInModel) // success
                 : MESSAGE_PERSON_NOT_IN_ADDRESSBOOK; // not found
     }
@@ -580,10 +610,12 @@ public class AddressBook {
      * @return successful delete person feedback message
      * @see #executeDeletePerson(String)
      */
-    private static String getMessageForSuccessfulDelete(String[] deletedPerson) {
+//    private static String getMessageForSuccessfulDelete(String[] deletedPerson) {
+//        return String.format(MESSAGE_DELETE_PERSON_SUCCESS, getMessageForFormattedPersonData(deletedPerson));
+//    }
+    private static String getMessageForSuccessfulDelete(HashMap<String,String> deletedPerson) {
         return String.format(MESSAGE_DELETE_PERSON_SUCCESS, getMessageForFormattedPersonData(deletedPerson));
     }
-
     /**
      * Clears all persons in the address book.
      *
@@ -599,12 +631,16 @@ public class AddressBook {
      *
      * @return feedback display message for the operation result
      */
+//    private static String executeListAllPersonsInAddressBook() {
+//        ArrayList<String[]> toBeDisplayed = getAllPersonsInAddressBook();
+//        showToUser(toBeDisplayed);
+//        return getMessageForPersonsDisplayedSummary(toBeDisplayed);
+//    }
     private static String executeListAllPersonsInAddressBook() {
-        ArrayList<String[]> toBeDisplayed = getAllPersonsInAddressBook();
+        ArrayList<HashMap<String,String>> toBeDisplayed = getAllPersonsInAddressBook();
         showToUser(toBeDisplayed);
         return getMessageForPersonsDisplayedSummary(toBeDisplayed);
     }
-
     /**
      * Requests to terminate the program.
      */
@@ -654,7 +690,12 @@ public class AddressBook {
      * Shows the list of persons to the user.
      * The list will be indexed, starting from 1.
      */
-    private static void showToUser(ArrayList<String[]> persons) {
+//    private static void showToUser(ArrayList<String[]> persons) {
+//        String listAsString = getDisplayString(persons);
+//        showToUser(listAsString);
+//        updateLatestViewedPersonListing(persons);
+//    }
+    private static void showToUser(ArrayList<HashMap<String,String>> persons) {
         String listAsString = getDisplayString(persons);
         showToUser(listAsString);
         updateLatestViewedPersonListing(persons);
@@ -663,10 +704,21 @@ public class AddressBook {
     /**
      * Returns the display string representation of the list of persons.
      */
-    private static String getDisplayString(ArrayList<String[]> persons) {
+//    private static String getDisplayString(ArrayList<String[]> persons) {
+//        final StringBuilder messageAccumulator = new StringBuilder();
+//        for (int i = 0; i < persons.size(); i++) {
+//            final String[] person = persons.get(i);
+//            final int displayIndex = i + DISPLAYED_INDEX_OFFSET;
+//            messageAccumulator.append('\t')
+//                    .append(getIndexedPersonListElementMessage(displayIndex, person))
+//                    .append(LS);
+//        }
+//        return messageAccumulator.toString();
+//    }
+    private static String getDisplayString(ArrayList<HashMap<String,String>> persons) {
         final StringBuilder messageAccumulator = new StringBuilder();
         for (int i = 0; i < persons.size(); i++) {
-            final String[] person = persons.get(i);
+            final HashMap<String,String> person = persons.get(i);
             final int displayIndex = i + DISPLAYED_INDEX_OFFSET;
             messageAccumulator.append('\t')
                     .append(getIndexedPersonListElementMessage(displayIndex, person))
@@ -682,7 +734,10 @@ public class AddressBook {
      * @param person       to show
      * @return formatted listing message with index
      */
-    private static String getIndexedPersonListElementMessage(int visibleIndex, String[] person) {
+//    private static String getIndexedPersonListElementMessage(int visibleIndex, String[] person) {
+//        return String.format(MESSAGE_DISPLAY_LIST_ELEMENT_INDEX, visibleIndex) + getMessageForFormattedPersonData(person);
+//    }
+    private static String getIndexedPersonListElementMessage(int visibleIndex, HashMap<String,String> person) {
         return String.format(MESSAGE_DISPLAY_LIST_ELEMENT_INDEX, visibleIndex) + getMessageForFormattedPersonData(person);
     }
 
@@ -692,7 +747,11 @@ public class AddressBook {
      * @param person to show
      * @return formatted message showing internal state
      */
-    private static String getMessageForFormattedPersonData(String[] person) {
+//    private static String getMessageForFormattedPersonData(String[] person) {
+//        return String.format(MESSAGE_DISPLAY_PERSON_DATA,
+//                getNameFromPerson(person), getPhoneFromPerson(person), getEmailFromPerson(person));
+//    }
+    private static String getMessageForFormattedPersonData(HashMap<String,String> person) {
         return String.format(MESSAGE_DISPLAY_PERSON_DATA,
                 getNameFromPerson(person), getPhoneFromPerson(person), getEmailFromPerson(person));
     }
@@ -702,7 +761,12 @@ public class AddressBook {
      *
      * @param newListing the new listing of persons
      */
-    private static void updateLatestViewedPersonListing(ArrayList<String[]> newListing) {
+//    private static void updateLatestViewedPersonListing(ArrayList<String[]> newListing) {
+//        // clone to insulate from future changes to arg list
+//        latestPersonListingView = new ArrayList<>(newListing);
+//    }
+
+    private static void updateLatestViewedPersonListing(ArrayList<HashMap<String,String>> newListing) {
         // clone to insulate from future changes to arg list
         latestPersonListingView = new ArrayList<>(newListing);
     }
@@ -713,10 +777,12 @@ public class AddressBook {
      * @param lastVisibleIndex displayed index from last shown person listing
      * @return the actual person object in the last shown person listing
      */
-    private static String[] getPersonByLastVisibleIndex(int lastVisibleIndex) {
+//    private static String[] getPersonByLastVisibleIndex(int lastVisibleIndex) {
+//        return latestPersonListingView.get(lastVisibleIndex - DISPLAYED_INDEX_OFFSET);
+//    }
+    private static HashMap<String, String> getPersonByLastVisibleIndex(int lastVisibleIndex) {
         return latestPersonListingView.get(lastVisibleIndex - DISPLAYED_INDEX_OFFSET);
     }
-
 
     /*
      * ===========================================
@@ -1145,9 +1211,9 @@ public class AddressBook {
 //                && isPersonEmailValid(person[PERSON_DATA_INDEX_EMAIL]);
 //    }
     private static boolean isPersonDataValid(HashMap<String, String> person) {
-        return isPersonNameValid(person[PERSON_DATA_INDEX_NAME])
-                && isPersonPhoneValid(person[PERSON_DATA_INDEX_PHONE])
-                && isPersonEmailValid(person[PERSON_DATA_INDEX_EMAIL]);
+        return isPersonNameValid(person.get(PERSON_PROPERTY_NAME))
+                && isPersonPhoneValid(person.get(PERSON_PROPERTY_PHONE))
+                && isPersonEmailValid(person.get(PERSON_PROPERTY_EMAIL));
     }
 
     /*
